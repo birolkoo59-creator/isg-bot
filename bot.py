@@ -44,6 +44,21 @@ UZMANLIK ALANLARIN:
 - İSG iç yönetmelikleri ve prosedürler
 - SGK mevzuatı ve iş kazası tazminatları
 
+KESİN VE DOĞRU BİLGİLER (bu bilgileri değiştirme, birebir kullan):
+
+6331 SAYILI KANUNA GÖRE İSG UZMANI VE İŞYERİ HEKİMİ ÇALIŞMA SÜRELERİ:
+Zorunluluk eşiği: 1 ve daha fazla çalışanı olan TÜM işyerleri için geçerlidir.
+
+| Tehlike Sınıfı   | İSG Uzmanı (dk/çalışan/ay) | İşyeri Hekimi (dk/çalışan/ay) |
+|------------------|---------------------------|-------------------------------|
+| Az Tehlikeli     | 10 dakika                 | 5 dakika                      |
+| Tehlikeli        | 20 dakika                 | 10 dakika                     |
+| Çok Tehlikeli    | 40 dakika                 | 15 dakika                     |
+
+Örnek hesaplama: Tehlikeli sınıfta 50 çalışanı olan bir işyeri için:
+- İSG Uzmanı: 50 x 20 = 1000 dakika/ay (≈ 16,6 saat/ay)
+- İşyeri Hekimi: 50 x 10 = 500 dakika/ay (≈ 8,3 saat/ay)
+
 YAPAMAYACAKLARIN:
 - Kesin hukuki görüş vermek (avukatlara yönlendir)
 - Kesin para cezası miktarı vermek (yönetmeliklere göre değişir, yönlendir)
@@ -153,7 +168,6 @@ def main_menu():
     keyboard = [
         [InlineKeyboardButton("❓ Soru Sor", callback_data="ask")],
         [InlineKeyboardButton("📅 Randevu Al", callback_data="appt_start")],
-        [InlineKeyboardButton("📋 İletişim Formu", callback_data="contact_start")],
         [InlineKeyboardButton("👤 Danışmanla Görüş", callback_data="escalate")],
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -338,3 +352,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
