@@ -46,23 +46,22 @@ def load_pdfs_to_db():
     if count > 0:
         return
 
-    pdfs = {
-        "6331": "1.5.6331.pdf",
-        "4857": "1.5.4857.pdf",
-        "5510": "1.5.5510.pdf",
-    }
+    pdf_files = [f for f in os.listdir(".") if f.lower().endswith(".pdf")]
+
+    if not pdf_files:
+        print("Hiç PDF dosyası bulunamadı.")
+        return
 
     conn = sqlite3.connect("isg_bot.db")
     c = conn.cursor()
 
-    for source, filename in pdfs.items():
-        if not os.path.exists(filename):
-            print(f"Dosya bulunamadı: {filename}")
-            continue
+    for filename in pdf_files:
         print(f"{filename} yükleniyor...")
         text = extract_text_from_pdf(filename)
         if not text:
+            print(f"{filename} okunamadı, atlanıyor.")
             continue
+        source = os.path.splitext(filename)[0]
         chunks = chunk_text(text)
         for chunk in chunks:
             c.execute("INSERT INTO law_chunks (source, content) VALUES (?, ?)", (source, chunk))
@@ -70,7 +69,7 @@ def load_pdfs_to_db():
 
     conn.commit()
     conn.close()
-    print("Tüm kanunlar veritabanına yüklendi.")
+    print("Tüm dosyalar veritabanına yüklendi.")
 
 def search_laws(query, top_k=4):
     try:
