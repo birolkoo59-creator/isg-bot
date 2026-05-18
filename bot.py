@@ -8,6 +8,7 @@ from telegram.ext import (
     CallbackQueryHandler, filters, ContextTypes
 )
 import anthropic
+from rag import init_rag_db, load_pdfs_to_db, build_context
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -154,7 +155,17 @@ def save_contact(chat_id, name, phone, message):
 
 def ask_claude(chat_id, user_message):
     history = get_history(chat_id)
-    history.append({"role": "user", "content": user_message})
+
+    law_context = build_context(user_message)
+    if law_context:
+        enriched_message = (
+            f"{user_message}\n\n"
+            f"[İlgili Kanun Maddeleri]\n{law_context}"
+        )
+    else:
+        enriched_message = user_message
+
+    history.append({"role": "user", "content": enriched_message})
     response = claude.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=1024,
@@ -342,6 +353,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     init_db()
+    init_rag_db()
+    load_pdfs_to_db()
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
@@ -352,4 +365,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
